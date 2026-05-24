@@ -1,31 +1,50 @@
 from fastapi import FastAPI
 from app.schemas import HeartData
+from app.model_loader import model
+from app.config import *
+
 import pandas as pd
-import joblib
 
-app = FastAPI()
+app = FastAPI(
+    title=APP_NAME,
+    description=APP_DESCRIPTION,
+    version=APP_VERSION
+)
 
-# Load model
-model = joblib.load("model/heart_model.joblib")
+FEATURES = [
+    "age",
+    "sex",
+    "cp",
+    "trestbps",
+    "chol",
+    "fbs",
+    "restecg",
+    "thalach",
+    "exang",
+    "oldpeak",
+    "slope",
+    "ca",
+    "thal"
+]
 
 @app.get("/")
-def root():
-    return {"message": "Heart Disease API"}
+def home():
+    return {
+        "message": "Heart Disease Prediction API is running!"
+    }
 
 @app.get("/health")
 def health():
-    return {"status": "healthy"}
+    return {
+        "status": "healthy"
+    }
 
 @app.get("/info")
 def info():
     return {
         "model": "Logistic Regression",
-        "features": [
-            "age", "sex", "cp", "trestbps",
-            "chol", "fbs", "restecg",
-            "thalach", "exang", "oldpeak",
-            "slope", "ca", "thal"
-        ]
+        "features": FEATURES,
+        "developer": "Your Name"
     }
 
 @app.post("/predict")
